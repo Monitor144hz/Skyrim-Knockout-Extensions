@@ -366,6 +366,24 @@ namespace ActorUtil
             return func(a_actor, a_ref, a_status);
         }
     };
+    struct Physics
+    {
+        static void PushActorAway(AIProcess *a_process, Actor *a_target, NiPoint3 *a_origin, float a_magnitude)
+        {
+            if (!a_process->InHighProcess()) 
+            { 
+                auto* actor = a_process->GetUserData();
+                if (!actor || !actor->MoveToHigh()) 
+                {
+                    return;
+                }
+            }
+            using func_t = decltype(PushActorAway);
+
+            REL::Relocation<func_t> func{ RELOCATION_ID(38858, 39895)};
+            func(a_process, a_target, a_origin, a_magnitude);
+        }
+    };
 }
 namespace FormUtil
 {

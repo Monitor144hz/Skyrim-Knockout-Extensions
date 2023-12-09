@@ -32,7 +32,9 @@ SKSEPluginLoad(const SKSE::LoadInterface *skse) {
 	if (!messaging->RegisterListener("SKSE", MessageHandler)) {
 		return false;
 	}
-	KnockoutExtensions::UnconsciousHook::InstallHook();
+	KnockoutExtensions::UnconsciousStateHook::Install();
+	KnockoutExtensions::MainUpdateHook::Install();
+	KnockoutExtensions::HitEventHook::Install();
 	
     return true;
 }
