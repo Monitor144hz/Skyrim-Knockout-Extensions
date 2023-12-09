@@ -355,7 +355,18 @@ namespace AnimUtil
             }
     };
 }
-
+namespace ActorUtil
+{
+    struct Detection
+    {
+        static uint64_t HasLOSViewCone(Actor *a_actor, TESObjectREFR *a_ref, bool *a_status)
+        {
+            using func_t = decltype(HasLOSViewCone);
+            REL::Relocation<func_t> func{RELOCATION_ID(39444, 0)};
+            return func(a_actor, a_ref, a_status);
+        }
+    };
+}
 namespace FormUtil
 {
     struct Parse

@@ -1,5 +1,5 @@
 #include "log.h"
-
+#include "hook.h"
 
 void OnDataLoaded()
 {
@@ -32,7 +32,7 @@ SKSEPluginLoad(const SKSE::LoadInterface *skse) {
 	if (!messaging->RegisterListener("SKSE", MessageHandler)) {
 		return false;
 	}
-
+	KnockoutExtensions::UnconsciousHook::InstallHook();
 	
     return true;
 }

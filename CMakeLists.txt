@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.21)
 
 # Set your project name. This will be the name of your SKSE .dll file.
-project(TemplatePlugin VERSION 0.0.1 LANGUAGES CXX)
+project(AlternateEssentials VERSION 0.0.1 LANGUAGES CXX)
 
 #
 
