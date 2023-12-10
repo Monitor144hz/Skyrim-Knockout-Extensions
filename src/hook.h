@@ -59,7 +59,7 @@ class HitEventHook
         auto& trampoline = SKSE::GetTrampoline(); 
 
         SKSE::AllocTrampoline(16);
-        REL::Relocation<std::uintptr_t> target { REL::RelocationID(37673, 38627), REL::Relocate(0x3C0, 0x4A8, 0x3C0) };
+        REL::Relocation<std::uintptr_t> target { REL::RelocationID(37673, 38627), REL::Relocate(0x3C0, 0x4A8) };
 
         _ProcessHitEvent = trampoline.write_call<5>(target.address(), ProcessHitEvent);
 
