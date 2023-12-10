@@ -22,6 +22,17 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 		break;
 	}
 }
+void InitializeSerialization()
+{
+	SKSE::log::trace("Initializing cosave serialization...");
+	auto *serde = SKSE::GetSerializationInterface();
+	serde->SetUniqueID(KnockoutExtensions::SerializeCode);
+	serde->SetSaveCallback(KnockoutExtensions::KnockoutHandler::GameSaveCallback);
+	serde->SetRevertCallback(KnockoutExtensions::KnockoutHandler::GameRevertCallback);
+	serde->SetLoadCallback(KnockoutExtensions::KnockoutHandler::GameLoadCallback);
+	SKSE::log::trace("Cosave serialization initialized.");
+}
+
 
 SKSEPluginLoad(const SKSE::LoadInterface *skse) {
     SKSE::Init(skse);
@@ -32,9 +43,12 @@ SKSEPluginLoad(const SKSE::LoadInterface *skse) {
 	if (!messaging->RegisterListener("SKSE", MessageHandler)) {
 		return false;
 	}
-	KnockoutExtensions::UnconsciousStateHook::Install();
+	InitializeSerialization();
+	// KnockoutExtensions::UnconsciousStateHook::Install();
+	KnockoutExtensions::BleedoutStateHook::Install();
 	KnockoutExtensions::MainUpdateHook::Install();
 	KnockoutExtensions::HitEventHook::Install();
 	
     return true;
 }
+

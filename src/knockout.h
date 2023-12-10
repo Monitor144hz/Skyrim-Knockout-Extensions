@@ -1,10 +1,16 @@
 #pragma once 
+#include <shared_mutex>
 #include "util.h"
 
 using namespace RE; 
 
 namespace KnockoutExtensions
 {
+    constexpr uint32_t SerializeCode = 'KNEX';
+    constexpr uint32_t SerializeVersion = 1;
+    
+    constexpr uint32_t SerializeActor = 'KNAC';
+
     class KnockoutHandler
     {
         public: 
@@ -14,25 +20,29 @@ namespace KnockoutExtensions
             static void RecoverUnconscious(Actor* a_actor);
 
             static void UpdateTrackedActors();
-        private: 
+            
+            static void GameSaveCallback(SKSE::SerializationInterface* serde);
+            static void GameLoadCallback(SKSE::SerializationInterface* serde);
+            static void GameRevertCallback(SKSE::SerializationInterface* serde);
 
-            static inline std::unordered_map<Actor*, float> actorMap; 
+        private:
+            using Lock = std::shared_mutex;
+            using ReadLocker = std::shared_lock<Lock>;
+            using WriteLocker = std::unique_lock<Lock>;
+
+            static inline Lock actorLock; 
+
+            static inline std::unordered_map<FormID, float> actorIDMap; 
 
             static void TrackActor(Actor* a_actor);
 
-            static void PushActorAway(AIProcess *a_process, Actor *a_target, NiPoint3 *a_origin, float a_magnitude)
-            {
-                if (!a_process->InHighProcess())
-                {
-                    auto *actor = a_process->GetUserData();
-                    if (!actor || !actor->MoveToHigh())
-                    {
-                        return;
-                    }
-                }
-                using func_t = decltype(PushActorAway);
-                REL::Relocation<func_t> func{REL::RelocationID(38858, 0)};
-                func(a_process, a_target, a_origin, a_magnitude);
-            }
+            static bool GameSave(SKSE::SerializationInterface* serde);
+            static bool GameLoad(SKSE::SerializationInterface* serde); 
+            static void GameRevert(SKSE::SerializationInterface* serde);
+
+            static bool RecordSave(SKSE::SerializationInterface* serde, uint32_t a_type, uint32_t a_version);
+            
+
+
     };
 }

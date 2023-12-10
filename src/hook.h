@@ -30,7 +30,27 @@ class UnconsciousStateHook
     //	p	Actor__KillImpl_140603B30+6C4	call    Actor__SetLifeState_1405EDEF0
     //>(REL::RelocationID(37673, 38627))
 };
+class BleedoutStateHook
+{
+    public: 
 
+    static void Install()
+    {
+            //Down	p	Actor__KillImpl_140603B30+6C4	call    Actor__SetLifeState_1405EDEF0
+            //Up	p	sub_140296CA0+52C	call    sub_140614650
+        auto& trampoline = SKSE::GetTrampoline(); 
+
+        SKSE::AllocTrampoline(16);
+
+        REL::Relocation<std::uintptr_t> target{ REL::RelocationID(36872, 19507), REL::Relocate(0x6C4, 0x52C)} ; 
+        _SetLifeState = trampoline.write_call<5>(target.address(), SetLifeState);
+    }
+    private: 
+    static bool SetLifeState(Actor* a_actor, ACTOR_LIFE_STATE a_lifeState); 
+    static inline REL::Relocation<decltype(SetLifeState)> _SetLifeState;
+
+
+};
 class HitEventHook
 {
     public: 

@@ -6,7 +6,7 @@ namespace KnockoutExtensions
 
     bool UnconsciousStateHook::SetLifeState(Actor *a_actor, ACTOR_LIFE_STATE a_lifeState)
     {
-        if (!a_actor) { return _SetLifeState(a_actor, a_lifeState); }
+        if (!a_actor) { return false; }
         
         bool wasUnconscious = a_actor->AsActorState()->GetLifeState() == ACTOR_LIFE_STATE::kUnconcious;
         bool isUnconscious = a_lifeState == ACTOR_LIFE_STATE::kUnconcious;
@@ -22,7 +22,7 @@ namespace KnockoutExtensions
         }
 
 
-        return _SetLifeState(a_actor, a_lifeState);
+        return true;
     }
 
 
@@ -55,5 +55,16 @@ namespace KnockoutExtensions
         framesElapsed = 0;
         KnockoutHandler::UpdateTrackedActors(); 
         _Update(a_this, a_delta);
+    }
+    bool BleedoutStateHook::SetLifeState(Actor *a_actor, ACTOR_LIFE_STATE a_lifeState)
+    {
+        if (!a_actor || a_lifeState != ACTOR_LIFE_STATE::kEssentialDown)
+        {
+            return _SetLifeState(a_actor, a_lifeState);
+        }
+
+        KnockoutHandler::ApplyUnconscious(a_actor);
+
+        return _SetLifeState(a_actor, ACTOR_LIFE_STATE::kUnconcious);
     }
 }
