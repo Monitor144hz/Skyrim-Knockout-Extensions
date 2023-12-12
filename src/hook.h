@@ -1,12 +1,12 @@
 #pragma once 
 
-
+#include "settings.h"
 #include "util.h"
 #include "knockout.h"
 using namespace RE; 
 namespace KnockoutExtensions
 {
-class UnconsciousStateHook
+class UnconsciousFuncHook
 {
     public: 
 
@@ -14,19 +14,28 @@ class UnconsciousStateHook
     {
         auto& trampoline = SKSE::GetTrampoline(); 
 
-        SKSE::AllocTrampoline(16);
-        //	j	sub_1405E32A0+9	jmp     Actor__SetLifeState_1405EDEF0
-        REL::Relocation<std::uintptr_t> target{ REL::RelocationID(36488, 0) , REL::Relocate(0x9, 0x9)};
+        SKSE::AllocTrampoline(32);
 
-        _SetLifeState = trampoline.write_call<5>(target.address(), SetLifeState);
+        //SE GameFunc__handler__SetUnconscious_1402FFAF0+C8	call    SetUnconscious_1405E32A0
+        //AE sub_140314500+C8	call    sub_140608F50
+        REL::Relocation<std::uintptr_t> enableTarget{ REL::RelocationID(21874, 22356) , REL::Relocate(0xC8, 0xC8) };
 
-        SKSE::log::info("Unconscious Hook Installed");
+        //SE GameFunc__handler__SetUnconscious_1402FFAF0+120	call    SetUnconscious_1405E32A0
+        //AE sub_140314500+120	call    sub_140608F50
+        REL::Relocation<std::uintptr_t> disableTarget{ REL::RelocationID(21874,22356), REL::Relocate(0x120, 0x120) }; 
+
+        _EnableUnconscious = trampoline.write_call<5>(enableTarget.address(), EnableUnconscious);
+        _DisableUnconscious = trampoline.write_call<5>(disableTarget.address(), DisableUnconscious); 
+
+        SKSE::log::info("Unconscious GameFunc Hooks Installed");
     }
     private: 
 
-    static bool SetLifeState(Actor* a_actor, ACTOR_LIFE_STATE a_lifeState);
-    
-    static inline REL::Relocation<decltype(SetLifeState)> _SetLifeState;
+    static bool DisableUnconscious(Actor* a_actor, bool a_enable); 
+    static bool EnableUnconscious(Actor* a_actor, bool a_enable);
+
+    static inline REL::Relocation<decltype(EnableUnconscious)> _EnableUnconscious; 
+    static inline REL::Relocation<decltype(DisableUnconscious)> _DisableUnconscious; 
     //	p	Actor__KillImpl_140603B30+6C4	call    Actor__SetLifeState_1405EDEF0
     //>(REL::RelocationID(37673, 38627))
 };
@@ -36,13 +45,13 @@ class BleedoutStateHook
 
     static void Install()
     {
-            //Down	p	Actor__KillImpl_140603B30+6C4	call    Actor__SetLifeState_1405EDEF0
-            //Up	p	sub_140296CA0+52C	call    sub_140614650
+            //SE Actor__KillImpl_140603B30+6C4	call    Actor__SetLifeState_1405EDEF0
+            //AE sub_14062B1E0+F78	call    sub_140614650
         auto& trampoline = SKSE::GetTrampoline(); 
 
         SKSE::AllocTrampoline(16);
 
-        REL::Relocation<std::uintptr_t> target{ REL::RelocationID(36872, 19507), REL::Relocate(0x6C4, 0x52C)} ; 
+        REL::Relocation<std::uintptr_t> target{ REL::RelocationID(36872, 37896), REL::Relocate(0x6C4, 0xF78)} ; 
         _SetLifeState = trampoline.write_call<5>(target.address(), SetLifeState);
     }
     private: 
@@ -90,3 +99,17 @@ class MainUpdateHook
         static inline uint32_t framesElapsed = 0; 
 };
 }
+
+class ActivateActorHook
+{
+    public: 
+
+    static void Install()
+    {
+        REL::Relocation<std::uintptr_t> ActorVtbl{ RE::VTABLE_Actor[0] }; 
+
+        
+
+    }
+
+};

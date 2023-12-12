@@ -1,6 +1,6 @@
 #include "log.h"
 #include "hook.h"
-
+#include "settings.h"
 void OnDataLoaded()
 {
    
@@ -10,15 +10,17 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 {
 	switch (a_msg->type) {
 	case SKSE::MessagingInterface::kDataLoaded:
-        
+        KnockoutExtensions::Settings::Load();
 		break;
 	case SKSE::MessagingInterface::kPostLoad:
 		break;
 	case SKSE::MessagingInterface::kPreLoadGame:
 		break;
 	case SKSE::MessagingInterface::kPostLoadGame:
+		KnockoutExtensions::Settings::Load();
         break;
 	case SKSE::MessagingInterface::kNewGame:
+		KnockoutExtensions::Settings::Load();
 		break;
 	}
 }
@@ -44,7 +46,7 @@ SKSEPluginLoad(const SKSE::LoadInterface *skse) {
 		return false;
 	}
 	InitializeSerialization();
-	// KnockoutExtensions::UnconsciousStateHook::Install();
+	KnockoutExtensions::UnconsciousFuncHook::Install();
 	KnockoutExtensions::BleedoutStateHook::Install();
 	KnockoutExtensions::MainUpdateHook::Install();
 	KnockoutExtensions::HitEventHook::Install();

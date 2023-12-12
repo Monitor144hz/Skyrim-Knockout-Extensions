@@ -365,6 +365,31 @@ namespace ActorUtil
             REL::Relocation<func_t> func{RELOCATION_ID(39444, 0)};
             return func(a_actor, a_ref, a_status);
         }
+        //SE 1406DE9A0
+        //AE 1407073E0
+        static int64_t GetHighestDetectionValueFromList(ProcessLists *a_processLists, Actor *a_target, uint64_t *a_witnessCount)
+        {
+            using func_t = decltype(GetHighestDetectionValueFromList); 
+            REL::Relocation<func_t> func{RELOCATION_ID(40394, 41408)};
+            return func(a_processLists, a_target, a_witnessCount);
+        }
+
+        static int64_t GetHighestDetectionValue(Actor *a_target, uint64_t *a_witnessCount)
+        {
+            return GetHighestDetectionValueFromList(ProcessLists::GetSingleton(), a_target, a_witnessCount);
+        }
+        //1405DE810       1406042C0
+        static void SendAssaultAlarm(Actor *a_victim, Actor *a_assaulter, bool arg3)
+        {
+            using func_t = decltype(SendAssaultAlarm); 
+            REL::Relocation<func_t> func { RELOCATION_ID(36429, 37424) };
+            func(a_victim, a_assaulter, arg3);
+        }
+        //14064FC50       140676830 
+        static void Process_Assault_14064FC50(AIProcess *a_victimProcess, Character *a_victim, Actor *a_assaulter, TESFaction *a_crimeFaction)
+        {
+            
+        }
     };
     struct Physics
     {

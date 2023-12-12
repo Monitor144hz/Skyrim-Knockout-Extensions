@@ -1,5 +1,7 @@
 #pragma once 
 #include <shared_mutex>
+
+#include "settings.h"
 #include "util.h"
 
 using namespace RE; 
@@ -13,13 +15,19 @@ namespace KnockoutExtensions
 
     class KnockoutHandler
     {
-        public: 
+
+        public:
 
             static void ApplyUnconscious(Actor* a_actor);
+            static void ApplyUnconscious(Actor* a_actor, Actor* a_causer);
 
             static void RecoverUnconscious(Actor* a_actor);
 
             static void UpdateTrackedActors();
+
+
+            static void TrackActor(Actor* a_actor);
+            static void UntrackActor(Actor* a_actor);
             
             static void GameSaveCallback(SKSE::SerializationInterface* serde);
             static void GameLoadCallback(SKSE::SerializationInterface* serde);
@@ -34,7 +42,7 @@ namespace KnockoutExtensions
 
             static inline std::unordered_map<FormID, float> actorIDMap; 
 
-            static void TrackActor(Actor* a_actor);
+            
 
             static bool GameSave(SKSE::SerializationInterface* serde);
             static bool GameLoad(SKSE::SerializationInterface* serde); 
